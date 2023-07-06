@@ -1,9 +1,9 @@
 package com.cognizant.jfcogni.trainingproject.views;
 
 
-public class UserView {
+public class GitHubUserView {
 
-    public String name;
+    private String name;
 
     public String getLogin() {
         return login;
@@ -13,7 +13,7 @@ public class UserView {
         this.login = login;
     }
 
-    public String login;
+    private String login;
 
     public String getName() {
         return name;

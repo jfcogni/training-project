@@ -1,7 +1,9 @@
 package com.cognizant.jfcogni.trainingproject.services.impl;
 
 import com.cognizant.jfcogni.trainingproject.services.GitHubService;
+import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.common.util.StringUtils;
@@ -14,6 +16,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @Component
 public class GitHubServiceImpl implements GitHubService {
@@ -47,6 +50,22 @@ public class GitHubServiceImpl implements GitHubService {
             return null;
     }
 
+    @Override
+    public List<GitHubRepoView> getReposByAuthToken(String authorizationToken) throws IOException, InterruptedException {
+        if(StringUtils.isBlank(gitHubApiUrl))
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        HttpResponse<String> response = httpCall(gitHubApiUrl+"user/repos", authorizationToken);
+
+        if(response.statusCode()!=200){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,response.body());
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return mapper.readValue(response.body(), new TypeReference<>(){});
+    }
+
 
 // --------- internal service methods --------------
 
@@ -61,9 +80,8 @@ public class GitHubServiceImpl implements GitHubService {
                 .build();
 
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response;
     }
 
 

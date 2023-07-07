@@ -4,11 +4,12 @@ import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface GitHubService {
 
 
 
-    public GitHubUserView getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
-    // TODO ->method public GitHubRepoView getRepoByxxx();
+    GitHubUserView getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
+    List<GitHubRepoView> getReposByAuthToken(String authorizationToken) throws IOException, InterruptedException;
 }

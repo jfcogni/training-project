@@ -2,6 +2,8 @@ package com.cognizant.jfcogni.trainingproject.views;
 
 public class GitHubRepoView {
 
+    public GitHubRepoView(){}
+
     private Long id;
     private String name;
     private GitHubUserView owner;
@@ -29,4 +31,7 @@ public class GitHubRepoView {
     public void setOwner(GitHubUserView owner) {
         this.owner = owner;
     }
+
+
+
 }

@@ -1,15 +1,14 @@
 package com.cognizant.jfcogni.trainingproject.controllers;
 
-import com.cognizant.jfcogni.trainingproject.services.impl.GitHubServiceImpl;
+import com.cognizant.jfcogni.trainingproject.services.GitHubService;
+import com.cognizant.jfcogni.trainingproject.views.GitHubRepoToCreateView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class GitHubController {
 
 
     @Autowired
-    private GitHubServiceImpl gitHubService;
+    private GitHubService gitHubService;
 
     @GetMapping("/get-user-info")
     public ResponseEntity<GitHubUserView> getUserInfo(
@@ -51,4 +50,26 @@ public class GitHubController {
         return new ResponseEntity<>(repos,HttpStatus.OK);
     }
 
+    @PostMapping("/create-repository")
+    public ResponseEntity<List<GitHubRepoToCreateView>> createRepository(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken,
+            @RequestParam String repositoryName,
+            @RequestParam String repositoryDescription,
+            @RequestParam boolean repositoryPrivate,
+            @RequestParam String repositoryHomePage
+    ) throws Exception {
+
+        List<GitHubRepoToCreateView> repos;
+
+        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+        //TODO: COMPROBAR VALORES DE PARAMETROS RECIBIDOS
+
+        GitHubRepoToCreateView repoToCreate = new GitHubRepoToCreateView(repositoryName,repositoryDescription,repositoryPrivate,repositoryHomePage);
+
+        repos = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);
+
+        return new ResponseEntity<>(repos,HttpStatus.CREATED);
+    }
 }

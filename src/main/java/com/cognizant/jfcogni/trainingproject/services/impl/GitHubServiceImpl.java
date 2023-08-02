@@ -1,6 +1,7 @@
 package com.cognizant.jfcogni.trainingproject.services.impl;
 
 import com.cognizant.jfcogni.trainingproject.services.GitHubService;
+import com.cognizant.jfcogni.trainingproject.views.GitHubRepoToCreateView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -31,7 +32,7 @@ public class GitHubServiceImpl implements GitHubService {
         if(StringUtils.isBlank(gitHubApiUrl))
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        HttpResponse<String> response = httpCall(gitHubApiUrl+"user", authorizationToken);
+        HttpResponse<String> response = httpGetCall(gitHubApiUrl+"/user", authorizationToken);
 
         if(response.statusCode()!=200){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,response.body());
@@ -43,8 +44,6 @@ public class GitHubServiceImpl implements GitHubService {
         if (user != null){
             if(StringUtils.isBlank(user.getName()))
                 user.setName("Sin nombre definido en GitHub");
-
-
             return user;
         }else
             return null;
@@ -55,7 +54,7 @@ public class GitHubServiceImpl implements GitHubService {
         if(StringUtils.isBlank(gitHubApiUrl))
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        HttpResponse<String> response = httpCall(gitHubApiUrl+"user/repos", authorizationToken);
+        HttpResponse<String> response = httpGetCall(gitHubApiUrl+"/user/repos", authorizationToken);
 
         if(response.statusCode()!=200){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,response.body());
@@ -66,10 +65,29 @@ public class GitHubServiceImpl implements GitHubService {
         return mapper.readValue(response.body(), new TypeReference<>(){});
     }
 
+    @Override
+    public List<GitHubRepoToCreateView> createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException {
+        if(StringUtils.isBlank(gitHubApiUrl))
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonRepo = mapper.writeValueAsString( repository );
+
+        HttpResponse<String> response = httpPostCall(gitHubApiUrl+"/user/repos", authorizationToken,jsonRepo);
+
+        if(response.statusCode()!=201){
+            //TODO: IMPRIR ERROR? DEVOLVER ERROR?
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,response.body());
+        }
+
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        return mapper.readValue(response.body(), new TypeReference<>(){});
+    }
+
 
 // --------- internal service methods --------------
 
-    private HttpResponse<String> httpCall(String URL, String token) throws IOException, InterruptedException {
+    private HttpResponse<String> httpGetCall(String URL, String token) throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -84,5 +102,18 @@ public class GitHubServiceImpl implements GitHubService {
 
     }
 
+    private HttpResponse<String> httpPostCall(String URL, String token, String jsonBody) throws IOException, InterruptedException {
+        HttpClient httpClient = HttpClient.newHttpClient();
 
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL))
+                .header("Accept","application/vnd.github+json")
+                .header("Authorization", "Bearer " + token)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+
+        return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    }
 }

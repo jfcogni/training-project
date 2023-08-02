@@ -1,5 +1,6 @@
 package com.cognizant.jfcogni.trainingproject.services;
 
+import com.cognizant.jfcogni.trainingproject.views.GitHubRepoToCreateView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
 import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
 
@@ -12,4 +13,6 @@ public interface GitHubService {
 
     GitHubUserView getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
     List<GitHubRepoView> getReposByAuthToken(String authorizationToken) throws IOException, InterruptedException;
+
+    List<GitHubRepoToCreateView> createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException;
 }

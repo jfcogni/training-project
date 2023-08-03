@@ -14,5 +14,5 @@ public interface GitHubService {
     GitHubUserView getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
     List<GitHubRepoView> getReposByAuthToken(String authorizationToken) throws IOException, InterruptedException;
 
-    List<GitHubRepoToCreateView> createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException;
+    GitHubRepoView createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException;
 }

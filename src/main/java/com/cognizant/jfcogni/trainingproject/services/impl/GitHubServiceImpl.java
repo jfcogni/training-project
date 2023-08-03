@@ -66,7 +66,7 @@ public class GitHubServiceImpl implements GitHubService {
     }
 
     @Override
-    public List<GitHubRepoToCreateView> createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException {
+    public GitHubRepoView createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateView repository) throws IOException, InterruptedException {
         if(StringUtils.isBlank(gitHubApiUrl))
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -76,10 +76,11 @@ public class GitHubServiceImpl implements GitHubService {
         HttpResponse<String> response = httpPostCall(gitHubApiUrl+"/user/repos", authorizationToken,jsonRepo);
 
         if(response.statusCode()!=201){
-            //TODO: IMPRIR ERROR? DEVOLVER ERROR?
+            //TODO: DEVOLVER ERROR?
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,response.body());
         }
 
+        mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         return mapper.readValue(response.body(), new TypeReference<>(){});
     }

@@ -51,7 +51,7 @@ public class GitHubController {
     }
 
     @PostMapping("/create-repository")
-    public ResponseEntity<List<GitHubRepoToCreateView>> createRepository(
+    public ResponseEntity<GitHubRepoView> createRepository(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken,
             @RequestParam String repositoryName,
             @RequestParam String repositoryDescription,
@@ -68,8 +68,8 @@ public class GitHubController {
 
         GitHubRepoToCreateView repoToCreate = new GitHubRepoToCreateView(repositoryName,repositoryDescription,repositoryPrivate,repositoryHomePage);
 
-        repos = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);
+        GitHubRepoView repo = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);
 
-        return new ResponseEntity<>(repos,HttpStatus.CREATED);
+        return new ResponseEntity<>(repo,HttpStatus.CREATED);
     }
 }

@@ -1,13 +1,16 @@
 package com.cognizant.jfcogni.trainingproject.controllers;
 
 import com.cognizant.jfcogni.trainingproject.services.GitHubService;
-import com.cognizant.jfcogni.trainingproject.views.GitHubRepoToCreateView;
-import com.cognizant.jfcogni.trainingproject.views.GitHubRepoView;
-import com.cognizant.jfcogni.trainingproject.views.GitHubUserView;
+import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoToCreateDTO;
+import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoDTO;
+import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
+import jakarta.validation.Valid;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,11 +24,11 @@ public class GitHubController {
     private GitHubService gitHubService;
 
     @GetMapping("/get-user-info")
-    public ResponseEntity<GitHubUserView> getUserInfo(
+    public ResponseEntity<GitHubUserDTO> getUserInfo(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken
     ) throws Exception {
 
-        GitHubUserView user;
+        GitHubUserDTO user;
 
         if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true(por defecto) en la obtencion del parametro
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -36,11 +39,11 @@ public class GitHubController {
     }
 
     @GetMapping("/get-repos-user-info")
-    public ResponseEntity<List<GitHubRepoView>> getReposUserInfo(
+    public ResponseEntity<List<GitHubRepoDTO>> getReposUserInfo(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken
     ) throws Exception {
 
-        List<GitHubRepoView> repos;
+        List<GitHubRepoDTO> repos;
 
         if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -51,24 +54,24 @@ public class GitHubController {
     }
 
     @PostMapping("/create-repository")
-    public ResponseEntity<GitHubRepoView> createRepository(
+    public ResponseEntity<GitHubRepoDTO> createRepository(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken,
-            @RequestParam String repositoryName,
-            @RequestParam String repositoryDescription,
-            @RequestParam boolean repositoryPrivate,
-            @RequestParam String repositoryHomePage
+            @Valid @RequestBody GitHubRepoToCreateDTO repoToCreate,
+            BindingResult result
     ) throws Exception {
 
-        List<GitHubRepoToCreateView> repos;
-
-        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+        if (result.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
-        //TODO: COMPROBAR VALORES DE PARAMETROS RECIBIDOS
+        if(repoToCreate == null || StringUtils.isBlank(repoToCreate.getName()) || StringUtils.isBlank(repoToCreate.getDescription()) || StringUtils.isBlank(repoToCreate.getHomepage())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
-        GitHubRepoToCreateView repoToCreate = new GitHubRepoToCreateView(repositoryName,repositoryDescription,repositoryPrivate,repositoryHomePage);
 
-        GitHubRepoView repo = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);
+        GitHubRepoDTO repo = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);
 
         return new ResponseEntity<>(repo,HttpStatus.CREATED);
     }

@@ -1,18 +1,27 @@
-package com.cognizant.jfcogni.trainingproject.views;
+package com.cognizant.jfcogni.trainingproject.dto;
 
-public class GitHubRepoToCreateView {
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-    public GitHubRepoToCreateView(){}
+public class GitHubRepoToCreateDTO {
+
+    public GitHubRepoToCreateDTO(){}
 
 
-    public GitHubRepoToCreateView(String name, String description, boolean privateRepo, String homepage) {
+    public GitHubRepoToCreateDTO(String name, String description, boolean privateRepo, String homepage) {
         this.name = name;
         this.description = description;
         this.privateRepo = privateRepo;
         this.homepage = homepage;
     }
 
+
+    @NotNull
+    @NotBlank
+    @Min(2)
     private String name;
+
 
     private String description;
     private boolean privateRepo;

@@ -1,7 +1,7 @@
-package com.cognizant.jfcogni.trainingproject.views;
+package com.cognizant.jfcogni.trainingproject.dto;
 
 
-public class GitHubUserView {
+public class GitHubUserDTO {
 
     private String name;
 

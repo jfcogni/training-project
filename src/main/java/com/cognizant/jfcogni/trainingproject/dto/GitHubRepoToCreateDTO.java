@@ -3,6 +3,7 @@ package com.cognizant.jfcogni.trainingproject.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 public class GitHubRepoToCreateDTO {
 
@@ -17,14 +18,17 @@ public class GitHubRepoToCreateDTO {
     }
 
 
-    @NotNull
+
     @NotBlank
     @Min(2)
     private String name;
 
-
+    @NotBlank
+    @Min(2)
     private String description;
     private boolean privateRepo;
+    @NotBlank
+    @Min(2)
     private String homepage;
 
     public String getName() {

@@ -63,12 +63,14 @@ public class GitHubController {
         if (result.hasErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-
         if(repoToCreate == null || StringUtils.isBlank(repoToCreate.getName()) || StringUtils.isBlank(repoToCreate.getDescription()) || StringUtils.isBlank(repoToCreate.getHomepage())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+
+        if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+
 
 
         GitHubRepoDTO repo = gitHubService.createRepoByAuthToken(authorizationToken,repoToCreate);

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,6 +25,8 @@ public class GitHubServiceImpl implements GitHubService {
 
     @Value("${url.github.api}")
     private String gitHubApiUrl;
+
+    private static String ACCEPT_APPLICATION_GITHUB = "application/vnd.github+json";
 
     @Override
     public GitHubUserDTO getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException {
@@ -70,6 +73,10 @@ public class GitHubServiceImpl implements GitHubService {
         if(StringUtils.isBlank(gitHubApiUrl))
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 
+        if(repository == null || StringUtils.isBlank(repository.getName()) || StringUtils.isBlank(repository.getDescription()) || StringUtils.isBlank(repository.getHomepage())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         String jsonRepo = mapper.writeValueAsString( repository );
 
@@ -93,8 +100,8 @@ public class GitHubServiceImpl implements GitHubService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))
-                .header("Accept","application/vnd.github+json")
-                .header("Authorization", "Bearer " + token)
+                .header(HttpHeaders.ACCEPT,ACCEPT_APPLICATION_GITHUB)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .GET()
                 .build();
 
@@ -108,8 +115,8 @@ public class GitHubServiceImpl implements GitHubService {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))
-                .header("Accept","application/vnd.github+json")
-                .header("Authorization", "Bearer " + token)
+                .header(HttpHeaders.ACCEPT,ACCEPT_APPLICATION_GITHUB)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
 

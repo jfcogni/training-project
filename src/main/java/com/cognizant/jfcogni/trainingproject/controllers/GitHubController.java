@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -56,16 +59,11 @@ public class GitHubController {
     @PostMapping("/create-repository")
     public ResponseEntity<GitHubRepoDTO> createRepository(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationToken,
-            @Valid @RequestBody GitHubRepoToCreateDTO repoToCreate,
-            BindingResult result
+            @Valid @RequestBody GitHubRepoToCreateDTO repoToCreate
     ) throws Exception {
 
-        if (result.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        if(repoToCreate == null || StringUtils.isBlank(repoToCreate.getName()) || StringUtils.isBlank(repoToCreate.getDescription()) || StringUtils.isBlank(repoToCreate.getHomepage())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+
+
 
         if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

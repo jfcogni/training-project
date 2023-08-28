@@ -1,10 +1,12 @@
-package com.cognizant.jfcogni.trainingproject.views;
+package com.cognizant.jfcogni.trainingproject.dto;
 
-public class GitHubRepoView {
+public class GitHubRepoDTO {
+
+    public GitHubRepoDTO(){}
 
     private Long id;
     private String name;
-    private GitHubUserView owner;
+    private GitHubUserDTO owner;
 
     public Long getId() {
         return id;
@@ -22,11 +24,14 @@ public class GitHubRepoView {
         this.name = name;
     }
 
-    public GitHubUserView getOwner() {
+    public GitHubUserDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(GitHubUserView owner) {
+    public void setOwner(GitHubUserDTO owner) {
         this.owner = owner;
     }
+
+
+
 }

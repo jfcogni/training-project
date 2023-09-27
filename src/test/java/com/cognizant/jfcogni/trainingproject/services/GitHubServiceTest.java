@@ -1,7 +1,6 @@
 package com.cognizant.jfcogni.trainingproject.services;
 
 import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
-import com.cognizant.jfcogni.trainingproject.services.impl.GitHubServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;

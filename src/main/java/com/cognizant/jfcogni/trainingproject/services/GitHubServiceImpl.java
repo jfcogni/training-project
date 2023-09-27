@@ -1,6 +1,5 @@
-package com.cognizant.jfcogni.trainingproject.services.impl;
+package com.cognizant.jfcogni.trainingproject.services;
 
-import com.cognizant.jfcogni.trainingproject.services.GitHubService;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoToCreateDTO;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoDTO;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
@@ -26,7 +25,7 @@ public class GitHubServiceImpl implements GitHubService {
     @Value("${url.github.api}")
     private String gitHubApiUrl;
 
-    private static String ACCEPT_APPLICATION_GITHUB = "application/vnd.github+json";
+    private static final String ACCEPT_APPLICATION_GITHUB = "application/vnd.github+json";
 
     @Override
     public GitHubUserDTO getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException {

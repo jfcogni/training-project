@@ -3,25 +3,21 @@ package com.cognizant.jfcogni.trainingproject.controllers;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
 import com.cognizant.jfcogni.trainingproject.services.GitHubServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest

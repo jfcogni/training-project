@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @SecurityScheme(name = HttpHeaders.AUTHORIZATION, scheme = "JWT", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
@@ -84,7 +85,7 @@ public class GitHubController {
                     content = @Content) })
     public ResponseEntity<GitHubUserDTO> getUserInfo(
             HttpServletRequest request
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         GitHubUserDTO user;
         if(request == null)
@@ -116,7 +117,7 @@ public class GitHubController {
     public ResponseEntity<GitHubRepoDTO> createRepository(
             HttpServletRequest request,
             @Valid @RequestBody GitHubRepoToCreateDTO repoToCreate
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         if(request == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

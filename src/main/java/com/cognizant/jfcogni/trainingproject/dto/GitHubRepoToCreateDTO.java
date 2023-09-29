@@ -21,6 +21,15 @@ public class GitHubRepoToCreateDTO {
     @Size(min = 2)
     private String homepage;
 
+    public GitHubRepoToCreateDTO() { }
+
+    public GitHubRepoToCreateDTO(String name, String description, boolean privateRepo, String homepage) {
+        this.name = name;
+        this.description = description;
+        this.privateRepo = privateRepo;
+        this.homepage = homepage;
+    }
+
     public String getName() {
         return name;
     }

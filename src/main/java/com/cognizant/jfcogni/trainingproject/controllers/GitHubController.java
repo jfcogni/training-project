@@ -54,7 +54,7 @@ public class GitHubController {
                     content = @Content) })
     public ResponseEntity<List<GitHubRepoDTO>> getReposUserInfo(
             HttpServletRequest request
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         List<GitHubRepoDTO> repos;
         if(request == null)

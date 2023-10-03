@@ -76,9 +76,9 @@ class GitHubControllerTest {
         assertAll(
                 () -> assertEquals(expected.getName(), result.getBody().getName()),
                 () -> assertEquals(expected.getLogin(), result.getBody().getLogin()),
-                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
-                () -> verify(gitHubService).getUserByAuthToken(anyString())
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode())
         );
+        verify(gitHubService).getUserByAuthToken(anyString());
     }
 
 
@@ -129,9 +129,9 @@ class GitHubControllerTest {
                 () -> assertEquals(expected.get(0).getName(), result.getBody().get(0).getName()),
                 () -> assertEquals(expected.get(0).getOwner().getName(), result.getBody().get(0).getOwner().getName()),
                 () -> assertEquals(expected.get(0).getOwner().getLogin(), result.getBody().get(0).getOwner().getLogin()),
-                () -> assertEquals(HttpStatus.OK, result.getStatusCode()),
-                () -> verify(gitHubService).getReposByAuthToken(anyString())
+                () -> assertEquals(HttpStatus.OK, result.getStatusCode())
         );
+        verify(gitHubService).getReposByAuthToken(anyString());
     }
 
 
@@ -197,9 +197,9 @@ class GitHubControllerTest {
                 () -> assertEquals(expected.getName(), result.getBody().getName()),
                 () -> assertEquals(expected.getOwner().getName(), result.getBody().getOwner().getName()),
                 () -> assertEquals(expected.getOwner().getLogin(), result.getBody().getOwner().getLogin()),
-                () -> assertEquals(HttpStatus.CREATED, result.getStatusCode()),
-                () -> verify(gitHubService).createRepoByAuthToken(anyString(),any())
+                () -> assertEquals(HttpStatus.CREATED, result.getStatusCode())
         );
+        verify(gitHubService).createRepoByAuthToken(anyString(),any());
     }
 
 }

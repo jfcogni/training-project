@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +34,7 @@ class GitHubServiceTest {
     public void testGetUserByAuthToken_nullGitHubApiUrl() throws Throwable {
         //given
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",null);
-        Mockito.when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getUserByAuthToken("validGitHubAuthorizationToken");
@@ -47,7 +48,7 @@ class GitHubServiceTest {
         //given
         String blankGitHubApiUrl = "";
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",blankGitHubApiUrl);
-        Mockito.when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getUserByAuthToken("validGitHubAuthorizationToken");
@@ -59,7 +60,7 @@ class GitHubServiceTest {
     @Test
     public void testGetUserByAuthToken_withNotValidAuthorizationToken_responseNot200() throws IOException, InterruptedException {
         //given
-        Mockito.when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getUserByAuthToken("blankGitHubAuthorizationToken");
@@ -72,7 +73,7 @@ class GitHubServiceTest {
     public void testGetUserByAuthToken_withValidAuthorizationToken() throws IOException, InterruptedException {
         //given
         GitHubUserDTO expected = new GitHubUserDTO("JesusName","jesusLogin");
-        Mockito.when(gitHubService.getUserByAuthToken(anyString())).thenReturn(expected);
+        when(gitHubService.getUserByAuthToken(anyString())).thenReturn(expected);
 
         //when
         GitHubUserDTO result = gitHubService.getUserByAuthToken("validGitHubAuthorizationToken");
@@ -82,6 +83,7 @@ class GitHubServiceTest {
                 () -> assertEquals(expected.getName(),result.getName()),
                 () -> assertEquals(expected.getLogin(),result.getLogin())
         );
+        verify(gitHubService).getUserByAuthToken(anyString());
 
     }
 
@@ -91,7 +93,7 @@ class GitHubServiceTest {
     public void testGetReposByAuthToken_nullGitHubApiUrl() throws Throwable {
         //given
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",null);
-        Mockito.when(gitHubService.getReposByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getReposByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getReposByAuthToken("validGitHubAuthorizationToken");
@@ -105,7 +107,7 @@ class GitHubServiceTest {
         //given
         String blankGitHubApiUrl = "";
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",blankGitHubApiUrl);
-        Mockito.when(gitHubService.getReposByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getReposByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getReposByAuthToken("validGitHubAuthorizationToken");
@@ -117,7 +119,7 @@ class GitHubServiceTest {
     @Test
     public void testGetReposByAuthToken_withNotValidAuthorizationToken_responseNot200() throws IOException, InterruptedException {
         //given
-        Mockito.when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.getUserByAuthToken("blankGitHubAuthorizationToken");
@@ -130,7 +132,7 @@ class GitHubServiceTest {
     public void testGetReposByAuthToken_withValidAuthorizationToken() throws IOException, InterruptedException {
         //given
         List<GitHubRepoDTO> expected = Arrays.asList(new GitHubRepoDTO (1L,"RepoName", new GitHubUserDTO("JesusName","jesusLogin")));
-        Mockito.when(gitHubService.getReposByAuthToken(anyString())).thenReturn(expected);
+        when(gitHubService.getReposByAuthToken(anyString())).thenReturn(expected);
 
         //when
         List<GitHubRepoDTO>  result = gitHubService.getReposByAuthToken("validGitHubAuthorizationToken");
@@ -140,6 +142,7 @@ class GitHubServiceTest {
                 () -> assertEquals(expected.get(0).getId(),result.get(0).getId()),
                 () -> assertEquals(expected.get(0).getName(),result.get(0).getName())
         );
+        verify(gitHubService).getReposByAuthToken(anyString());
 
     }
 
@@ -149,7 +152,7 @@ class GitHubServiceTest {
     public void testCreateRepoByAuthToken_nullGitHubApiUrl() throws Throwable {
         //given
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",null);
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.createRepoByAuthToken(anyString(),any());
@@ -163,7 +166,7 @@ class GitHubServiceTest {
         //given
         String blankGitHubApiUrl = "";
         ReflectionTestUtils.setField(gitHubService,"gitHubApiUrl",blankGitHubApiUrl);
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.createRepoByAuthToken(anyString(),any());
@@ -176,7 +179,7 @@ class GitHubServiceTest {
     public void testCreateRepoByAuthToken_withNullRepository() throws IOException, InterruptedException {
         //given
         GitHubRepoToCreateDTO repoToCreate = null;
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.createRepoByAuthToken("",repoToCreate);
@@ -189,7 +192,7 @@ class GitHubServiceTest {
     public void testCreateRepoByAuthToken_withRepositoryValuesBlank() throws IOException, InterruptedException {
         //given
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO();
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.createRepoByAuthToken("",repoToCreate);
@@ -202,7 +205,7 @@ class GitHubServiceTest {
         //given
         GitHubRepoDTO expected = new GitHubRepoDTO (1L,"RepoName", new GitHubUserDTO("JesusName","jesusLogin"));
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("RepoName", "RepoDescription", false, "HomePage" );
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubService.createRepoByAuthToken("",repoToCreate);
@@ -216,7 +219,7 @@ class GitHubServiceTest {
         //given
         GitHubRepoDTO expected = new GitHubRepoDTO (1L,"RepoName", new GitHubUserDTO("JesusName","jesusLogin"));
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("RepoName", "RepoDescription", false, "HomePage" );
-        Mockito.when(gitHubService.createRepoByAuthToken(anyString(),any())).thenReturn(expected);
+        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenReturn(expected);
 
         //when
         GitHubRepoDTO  result = gitHubService.createRepoByAuthToken("validGitHubAuthorizationToken",repoToCreate);
@@ -228,6 +231,8 @@ class GitHubServiceTest {
                 () -> assertEquals(expected.getOwner().getName(),result.getOwner().getName()),
                 () -> assertEquals(expected.getOwner().getLogin(),result.getOwner().getLogin())
         );
+
+        verify(gitHubService).createRepoByAuthToken(anyString(),any());
 
     }
 }

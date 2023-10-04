@@ -61,7 +61,7 @@ public class GitHubController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         repos = gitHubService.getReposByAuthToken(authorizationToken);
@@ -92,7 +92,7 @@ public class GitHubController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true(por defecto) en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         user = gitHubService.getUserByAuthToken(authorizationToken);
@@ -124,7 +124,7 @@ public class GitHubController {
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
 

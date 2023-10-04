@@ -5,10 +5,12 @@ import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoToCreateDTO;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
 import com.cognizant.jfcogni.trainingproject.services.GitHubServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,9 +26,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class GitHubControllerTest {
 
+    private final String validAuthorizationToken = "validAuthorizationToken";
+    private final String blankAuthorizationToken = "";
     @Mock
     private GitHubServiceImpl gitHubService;
 
@@ -48,9 +52,8 @@ class GitHubControllerTest {
     @Test
     public void testGetUserInfo_withNotValidAuthorizationUserToken() {
         //given
-        String authorizationToke = "";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
 
         //when
         Executable executable = () -> gitHubController.getUserInfo(request);
@@ -62,11 +65,10 @@ class GitHubControllerTest {
     @Test
     public void testGetUserInfo_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
         //given
-        String authorizationToke = "dummyAuthorizationToken";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
         GitHubUserDTO expected = new GitHubUserDTO("JesusName","jesusLogin");
-        when(gitHubService.getUserByAuthToken(authorizationToke)).thenReturn(expected);
+        when(gitHubService.getUserByAuthToken(validAuthorizationToken)).thenReturn(expected);
 
         //when
         ResponseEntity<GitHubUserDTO> result = gitHubController.getUserInfo(request);
@@ -78,7 +80,7 @@ class GitHubControllerTest {
                 () -> assertEquals(expected.getLogin(), result.getBody().getLogin()),
                 () -> assertEquals(HttpStatus.OK, result.getStatusCode())
         );
-        verify(gitHubService).getUserByAuthToken(anyString());
+        verify(gitHubService).getUserByAuthToken(validAuthorizationToken);
     }
 
 
@@ -98,9 +100,8 @@ class GitHubControllerTest {
     @Test
     public void testGetReposUserInfo_withNotValidAuthorizationUserToken() {
         //given
-        String authorizationToke = "";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
 
 
         //when
@@ -113,10 +114,8 @@ class GitHubControllerTest {
     @Test
     public void testGetReposUserInfo_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
         //given
-
-        String authorizationToke = "dummyAuthorizationToken";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
         List<GitHubRepoDTO> expected = Arrays.asList(new GitHubRepoDTO(1L,"NameRepo", new GitHubUserDTO("JesusName","jesusLogin")));
         when(gitHubService.getReposByAuthToken(anyString())).thenReturn(expected);
 
@@ -151,9 +150,8 @@ class GitHubControllerTest {
     @Test
     public void testCreateRepository_withNotValidAuthorizationUserToken() {
         //given
-        String authorizationToke = "";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
 
         //when
         Executable executable = () -> gitHubController.createRepository(request,null);
@@ -165,12 +163,10 @@ class GitHubControllerTest {
     @Test
     public void testCreateRepository_withEmptyRepoToCreate_ResponseStatusException() throws IOException, InterruptedException {
         //given
-
-        String authorizationToke = "dummyAuthorizationToken";
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO();
-        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenThrow(ResponseStatusException.class);
+        when(gitHubService.createRepoByAuthToken(anyString(),any(GitHubRepoToCreateDTO.class))).thenThrow(ResponseStatusException.class);
 
         //when
         Executable executable = () -> gitHubController.createRepository(request,repoToCreate);
@@ -182,12 +178,11 @@ class GitHubControllerTest {
     @Test
     public void testCreateRepository_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
         //given
-        String authorizationToke = "dummyAuthorizationToken";
         GitHubRepoDTO expected = new GitHubRepoDTO(1L,"NameRepo", new GitHubUserDTO("JesusName","jesusLogin"));
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("NameRepo", "DescriptionRepo", false, "RepoHomePage");
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(HttpHeaders.AUTHORIZATION,authorizationToke);
-        when(gitHubService.createRepoByAuthToken(anyString(),any())).thenReturn(expected);
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
+        when(gitHubService.createRepoByAuthToken(anyString(),any(GitHubRepoToCreateDTO.class))).thenReturn(expected);
         //when
         ResponseEntity<GitHubRepoDTO> result = gitHubController.createRepository(request,repoToCreate);
 
@@ -199,7 +194,7 @@ class GitHubControllerTest {
                 () -> assertEquals(expected.getOwner().getLogin(), result.getBody().getOwner().getLogin()),
                 () -> assertEquals(HttpStatus.CREATED, result.getStatusCode())
         );
-        verify(gitHubService).createRepoByAuthToken(anyString(),any());
+        verify(gitHubService, times(1)).createRepoByAuthToken(anyString(),any(GitHubRepoToCreateDTO.class));
     }
 
 }

@@ -22,8 +22,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class GitHubControllerTest {
@@ -37,7 +44,7 @@ class GitHubControllerTest {
     private GitHubController gitHubController;
 
     @Test
-    public void testGetUserInfo_withNullRequest_responseStatusException() throws IOException, InterruptedException {
+    public void testGetUserInfoWithNullRequestResponseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -50,7 +57,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetUserInfo_withBlankAuthorizationUserToken() throws IOException, InterruptedException {
+    public void testGetUserInfoWithBlankAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -64,7 +71,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetUserInfo_withNotValidAuthorizationUserToken_ResponseStatus401() throws IOException, InterruptedException {
+    public void testGetUserInfoWithNotValidAuthorizationUserTokenResponseStatus401() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
@@ -79,7 +86,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetUserInfo_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
+    public void testGetUserInfoWithValidAuthorizationUserTokenResponseStatus200() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
@@ -102,7 +109,7 @@ class GitHubControllerTest {
 
 
     @Test
-    public void testGetReposUserInfo_withNullRequest_responseStatusException() throws IOException, InterruptedException {
+    public void testGetReposUserInfoWithNullRequestResponseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -115,7 +122,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetReposUserInfo_withBlankAuthorizationUserToken() throws IOException, InterruptedException {
+    public void testGetReposUserInfoWithBlankAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -129,7 +136,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetReposUserInfo_withNotValidAuthorizationUserToken_ResponseStatus401() throws IOException, InterruptedException {
+    public void testGetReposUserInfoWithNotValidAuthorizationUserTokenResponseStatus401() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
@@ -144,7 +151,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetReposUserInfo_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
+    public void testGetReposUserInfoWithValidAuthorizationUserTokenResponseStatus200() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
@@ -168,7 +175,7 @@ class GitHubControllerTest {
 
 
     @Test
-    public void testCreateRepository_withNullRequest_responseStatusException() throws IOException, InterruptedException {
+    public void testCreateRepositoryWithNullRequestResponseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -181,7 +188,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testCreateRepository_withNotValidAuthorizationUserToken() throws IOException, InterruptedException {
+    public void testCreateRepositoryWithNotValidAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -195,7 +202,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testCreateRepository_withEmptyRepoToCreate_ResponseStatusException() throws IOException, InterruptedException {
+    public void testCreateRepositoryWithEmptyRepoToCreateResponseStatusException() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
@@ -211,7 +218,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testCreateRepository_withValidAuthorizationUserToken_ResponseStatus201() throws IOException, InterruptedException {
+    public void testCreateRepositoryWithValidAuthorizationUserTokenResponseStatus201() throws IOException, InterruptedException {
         //given
         GitHubRepoDTO expected = new GitHubRepoDTO(1L,"NameRepo", new GitHubUserDTO("JesusName","jesusLogin"));
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("NameRepo", "DescriptionRepo", false, "RepoHomePage");

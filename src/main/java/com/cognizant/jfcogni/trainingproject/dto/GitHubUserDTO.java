@@ -10,6 +10,7 @@ public class GitHubUserDTO {
         this.login = login;
     }
 
+
     private String name;
 
     private String login;

@@ -11,7 +11,7 @@ public interface GitHubService {
 
 
 
-    GitHubUserDTO getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
+        GitHubUserDTO getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException;
     List<GitHubRepoDTO> getReposByAuthToken(String authorizationToken) throws IOException, InterruptedException;
 
     GitHubRepoDTO createRepoByAuthToken(String authorizationToken, GitHubRepoToCreateDTO repository) throws IOException, InterruptedException;

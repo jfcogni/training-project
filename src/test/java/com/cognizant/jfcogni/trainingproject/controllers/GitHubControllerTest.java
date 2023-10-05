@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -38,7 +37,7 @@ class GitHubControllerTest {
     private GitHubController gitHubController;
 
     @Test
-    public void testGetUserInfo_withNullRequest_responseStatusException() {
+    public void testGetUserInfo_withNullRequest_responseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -46,11 +45,12 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).getUserByAuthToken(anyString());
 
     }
 
     @Test
-    public void testGetUserInfo_withNotValidAuthorizationUserToken() {
+    public void testGetUserInfo_withBlankValidAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -60,6 +60,22 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).getUserByAuthToken(anyString());
+    }
+
+    @Test
+    public void testGetUserInfo_withNotValidAuthorizationUserToken_ResponseStatus401() throws IOException, InterruptedException {
+        //given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
+        when(gitHubService.getUserByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+
+        //when
+        Executable executable = () -> gitHubController.getUserInfo(request);
+
+        //then
+        assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService).getUserByAuthToken(validAuthorizationToken);
     }
 
     @Test
@@ -86,7 +102,7 @@ class GitHubControllerTest {
 
 
     @Test
-    public void testGetReposUserInfo_withNullRequest_responseStatusException() {
+    public void testGetReposUserInfo_withNullRequest_responseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -94,21 +110,37 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).getReposByAuthToken(anyString());
 
     }
 
     @Test
-    public void testGetReposUserInfo_withNotValidAuthorizationUserToken() {
+    public void testGetReposUserInfo_withBlankValidAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
-
 
         //when
         Executable executable = () -> gitHubController.getReposUserInfo(request);
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).getReposByAuthToken(anyString());
+    }
+
+    @Test
+    public void testGetReposUserInfo_withNotValidAuthorizationUserToken_ResponseStatus401() throws IOException, InterruptedException {
+        //given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION,validAuthorizationToken);
+        when(gitHubService.getReposByAuthToken(anyString())).thenThrow(ResponseStatusException.class);
+
+        //when
+        Executable executable = () -> gitHubController.getReposUserInfo(request);
+
+        //then
+        assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService).getReposByAuthToken(anyString());
     }
 
     @Test
@@ -136,7 +168,7 @@ class GitHubControllerTest {
 
 
     @Test
-    public void testCreateRepository_withNullRequest_responseStatusException() {
+    public void testCreateRepository_withNullRequest_responseStatusException() throws IOException, InterruptedException {
         //given
 
         //when
@@ -144,11 +176,12 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).createRepoByAuthToken(any(),any());
 
     }
 
     @Test
-    public void testCreateRepository_withNotValidAuthorizationUserToken() {
+    public void testCreateRepository_withNotValidAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -158,6 +191,7 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService, never()).createRepoByAuthToken(any(),any());
     }
 
     @Test
@@ -173,6 +207,7 @@ class GitHubControllerTest {
 
         //then
         assertThrows(ResponseStatusException.class,executable);
+        verify(gitHubService).createRepoByAuthToken(any(),any());
     }
 
     @Test

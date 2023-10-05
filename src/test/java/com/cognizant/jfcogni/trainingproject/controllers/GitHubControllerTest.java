@@ -211,7 +211,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testCreateRepository_withValidAuthorizationUserToken_ResponseStatus200() throws IOException, InterruptedException {
+    public void testCreateRepository_withValidAuthorizationUserToken_ResponseStatus201() throws IOException, InterruptedException {
         //given
         GitHubRepoDTO expected = new GitHubRepoDTO(1L,"NameRepo", new GitHubUserDTO("JesusName","jesusLogin"));
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("NameRepo", "DescriptionRepo", false, "RepoHomePage");

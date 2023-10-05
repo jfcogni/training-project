@@ -50,7 +50,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetUserInfo_withBlankValidAuthorizationUserToken() throws IOException, InterruptedException {
+    public void testGetUserInfo_withBlankAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);
@@ -115,7 +115,7 @@ class GitHubControllerTest {
     }
 
     @Test
-    public void testGetReposUserInfo_withBlankValidAuthorizationUserToken() throws IOException, InterruptedException {
+    public void testGetReposUserInfo_withBlankAuthorizationUserToken() throws IOException, InterruptedException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.AUTHORIZATION,blankAuthorizationToken);

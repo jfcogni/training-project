@@ -47,6 +47,7 @@ class GitHubControllerIT {
                 .andReturn();
     }
 
+    @Test
     public void testGetUserInfoWithBlankAuthorizationUserTokenResponseUnauthorized()throws Exception {
         //given
         RequestBuilder request = MockMvcRequestBuilders

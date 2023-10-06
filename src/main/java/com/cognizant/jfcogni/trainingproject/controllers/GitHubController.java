@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @SecurityScheme(name = HttpHeaders.AUTHORIZATION, scheme = "JWT", type = SecuritySchemeType.APIKEY, in = SecuritySchemeIn.HEADER)
@@ -53,14 +54,14 @@ public class GitHubController {
                     content = @Content) })
     public ResponseEntity<List<GitHubRepoDTO>> getReposUserInfo(
             HttpServletRequest request
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         List<GitHubRepoDTO> repos;
         if(request == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         repos = gitHubService.getReposByAuthToken(authorizationToken);
@@ -84,14 +85,14 @@ public class GitHubController {
                     content = @Content) })
     public ResponseEntity<GitHubUserDTO> getUserInfo(
             HttpServletRequest request
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         GitHubUserDTO user;
         if(request == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if(authorizationToken == null || authorizationToken.isEmpty()) // no puede ser nulo nunca si esta como required=true(por defecto) en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         user = gitHubService.getUserByAuthToken(authorizationToken);
@@ -116,14 +117,14 @@ public class GitHubController {
     public ResponseEntity<GitHubRepoDTO> createRepository(
             HttpServletRequest request,
             @Valid @RequestBody GitHubRepoToCreateDTO repoToCreate
-    ) throws Exception {
+    ) throws IOException, InterruptedException {
 
         if(request == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(StringUtils.isBlank(authorizationToken)) // no puede ser nulo nunca si esta como required=true en la obtencion del parametro
+        if(StringUtils.isBlank(authorizationToken))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
 

@@ -3,16 +3,18 @@ package com.cognizant.jfcogni.trainingproject.dto;
 
 public class GitHubUserDTO {
 
-    private String name;
-
-    private String login;
-
     public GitHubUserDTO() {
     }
     public GitHubUserDTO(String name, String login) {
         this.name = name;
         this.login = login;
     }
+
+
+    private String name;
+
+    private String login;
+
 
     public String getLogin() {
         return login;

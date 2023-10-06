@@ -1,6 +1,5 @@
-package com.cognizant.jfcogni.trainingproject.services.impl;
+package com.cognizant.jfcogni.trainingproject.services;
 
-import com.cognizant.jfcogni.trainingproject.services.GitHubService;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoToCreateDTO;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubRepoDTO;
 import com.cognizant.jfcogni.trainingproject.dto.GitHubUserDTO;
@@ -8,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,10 @@ public class GitHubServiceImpl implements GitHubService {
     @Value("${url.github.api}")
     private String gitHubApiUrl;
 
-    private static String ACCEPT_APPLICATION_GITHUB = "application/vnd.github+json";
+    @Autowired
+    private HttpClient httpClient;
+
+    private static final String ACCEPT_APPLICATION_GITHUB = "application/vnd.github+json";
 
     @Override
     public GitHubUserDTO getUserByAuthToken(String authorizationToken) throws IOException, InterruptedException {
@@ -83,7 +86,6 @@ public class GitHubServiceImpl implements GitHubService {
         HttpResponse<String> response = httpPostCall(gitHubApiUrl+"/user/repos", authorizationToken,jsonRepo);
 
         if(response.statusCode()!=201){
-            //TODO: DEVOLVER ERROR? SI, CONTROLAR 422, 400 Y 500
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,response.body());
         }
 
@@ -96,7 +98,6 @@ public class GitHubServiceImpl implements GitHubService {
 // --------- internal service methods --------------
 
     private HttpResponse<String> httpGetCall(String URL, String token) throws IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))
@@ -111,7 +112,6 @@ public class GitHubServiceImpl implements GitHubService {
     }
 
     private HttpResponse<String> httpPostCall(String URL, String token, String jsonBody) throws IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(URL))

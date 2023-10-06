@@ -5,6 +5,15 @@ public class GitHubUserDTO {
 
     private String name;
 
+    private String login;
+
+    public GitHubUserDTO() {
+    }
+    public GitHubUserDTO(String name, String login) {
+        this.name = name;
+        this.login = login;
+    }
+
     public String getLogin() {
         return login;
     }
@@ -13,7 +22,6 @@ public class GitHubUserDTO {
         this.login = login;
     }
 
-    private String login;
 
     public String getName() {
         return name;

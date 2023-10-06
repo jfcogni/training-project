@@ -4,6 +4,12 @@ public class GitHubRepoDTO {
 
     public GitHubRepoDTO(){}
 
+    public GitHubRepoDTO(Long id, String name, GitHubUserDTO owner) {
+        this.id = id;
+        this.name = name;
+        this.owner = owner;
+    }
+
     private Long id;
     private String name;
     private GitHubUserDTO owner;

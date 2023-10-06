@@ -89,11 +89,11 @@ public class GitHubController {
 
         GitHubUserDTO user;
         if(request == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,HttpStatus.BAD_REQUEST.getReasonPhrase());
 
         String authorizationToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(StringUtils.isBlank(authorizationToken))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase());
 
         user = gitHubService.getUserByAuthToken(authorizationToken);
 

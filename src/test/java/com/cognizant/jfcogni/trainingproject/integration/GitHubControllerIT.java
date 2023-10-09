@@ -274,7 +274,7 @@ class GitHubControllerIT {
     }
 
     @Test
-    public void testCreateRepositoryWithValidAuthorizationUserTokenResponseOk() throws Exception {
+    public void testCreateRepositoryWithValidAuthorizationUserTokenResponseCreated() throws Exception {
         //given
         ObjectMapper mapper = new ObjectMapper();
         GitHubRepoToCreateDTO repoToCreate = new GitHubRepoToCreateDTO("NameRepo", "DescriptionRepo", false, "RepoHomePage");

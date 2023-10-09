@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(GitHubController.class)
-class GitHubControllerIT {
+public class GitHubControllerIT {
 
     private final String validAuthorizationToken = "validAuthorizationToken";
     private final String blankAuthorizationToken = "";

@@ -33,7 +33,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class GitHubServiceTest {
+public class GitHubServiceTest {
 
     private final String fieldGitHubApiUrlInGitHubService = "gitHubApiUrl";
     private final String gitHubApiUrl = "http://www.MockedURL.com";

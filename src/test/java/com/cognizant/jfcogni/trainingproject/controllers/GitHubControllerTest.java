@@ -33,7 +33,7 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class GitHubControllerTest {
+public class GitHubControllerTest {
 
     private final String validAuthorizationToken = "validAuthorizationToken";
     private final String blankAuthorizationToken = "";

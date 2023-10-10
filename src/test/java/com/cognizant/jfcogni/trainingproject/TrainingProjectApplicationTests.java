@@ -2,20 +2,16 @@ package com.cognizant.jfcogni.trainingproject;
 
 
 import com.cognizant.jfcogni.trainingproject.controllers.GitHubControllerTest;
-import com.cognizant.jfcogni.trainingproject.integration.GitHubControllerIT;
+import com.cognizant.jfcogni.trainingproject.integration.GitHubControllerTestIT;
 import com.cognizant.jfcogni.trainingproject.services.GitHubServiceTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({
 		GitHubServiceTest.class,
 		GitHubControllerTest.class,
-		GitHubControllerIT.class
+        GitHubControllerTestIT.class
 		})
-class TrainingProjectApplicationTests {
-
-
+public class TrainingProjectApplicationTests {
 }

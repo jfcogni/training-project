@@ -22,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -34,11 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(GitHubController.class)
 public class GitHubControllerIT {
 
-    private final String validAuthorizationToken = "validAuthorizationToken";
-    private final String blankAuthorizationToken = "";
+    private static final String VALID_AUTHORIZATION_TOKEN = "validAuthorizationToken";
+    private static final String NOT_VALID_AUTHORIZATION_TOKEN = "*";
+    private static final String BLANK_AUTHORIZATION_TOKEN = "";
+
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private GitHubServiceImpl gitHubService;
 
@@ -60,7 +59,7 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-user-info")
-                .header(HttpHeaders.AUTHORIZATION,blankAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, BLANK_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
 
         //then
@@ -75,9 +74,9 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-user-info")
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken+"*")
+                .header(HttpHeaders.AUTHORIZATION, NOT_VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
-        when(gitHubService.getUserByAuthToken(validAuthorizationToken+"*")).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+        when(gitHubService.getUserByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN)).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
 
         //then
         mockMvc.perform(request)
@@ -85,7 +84,7 @@ public class GitHubControllerIT {
                 .andExpect(status().reason(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).getUserByAuthToken(validAuthorizationToken+"*");
+        verify(gitHubService, times(1)).getUserByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN);
 
     }
 
@@ -96,9 +95,9 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-user-info")
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
-        when(gitHubService.getUserByAuthToken(validAuthorizationToken)).thenReturn(expected);
+        when(gitHubService.getUserByAuthToken(VALID_AUTHORIZATION_TOKEN)).thenReturn(expected);
 
         //then
         mockMvc.perform(request)
@@ -107,7 +106,7 @@ public class GitHubControllerIT {
                 .andExpect(jsonPath("$.login").value(expected.getLogin()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).getUserByAuthToken(validAuthorizationToken);
+        verify(gitHubService, times(1)).getUserByAuthToken(VALID_AUTHORIZATION_TOKEN);
 
     }
 
@@ -131,7 +130,7 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-repos-user-info")
-                .header(HttpHeaders.AUTHORIZATION,blankAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, BLANK_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
 
         //then
@@ -146,9 +145,9 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-repos-user-info")
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken+"*")
+                .header(HttpHeaders.AUTHORIZATION, NOT_VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
-        when(gitHubService.getReposByAuthToken(validAuthorizationToken+"*")).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+        when(gitHubService.getReposByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN)).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
 
         //then
         mockMvc.perform(request)
@@ -156,7 +155,7 @@ public class GitHubControllerIT {
                 .andExpect(status().reason(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).getReposByAuthToken(validAuthorizationToken+"*");
+        verify(gitHubService, times(1)).getReposByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN);
 
     }
 
@@ -167,9 +166,9 @@ public class GitHubControllerIT {
         //given
         RequestBuilder request = MockMvcRequestBuilders
                 .get("/get-repos-user-info")
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON);
-        when(gitHubService.getReposByAuthToken(validAuthorizationToken)).thenReturn(expected);
+        when(gitHubService.getReposByAuthToken(VALID_AUTHORIZATION_TOKEN)).thenReturn(expected);
 
         //then
         mockMvc.perform(request)
@@ -181,7 +180,7 @@ public class GitHubControllerIT {
                 .andExpect(jsonPath("$[0].owner.login").value(expected.get(0).getOwner().getLogin()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).getReposByAuthToken(validAuthorizationToken);
+        verify(gitHubService, times(1)).getReposByAuthToken(VALID_AUTHORIZATION_TOKEN);
 
     }
 
@@ -239,7 +238,7 @@ public class GitHubControllerIT {
         RequestBuilder request = MockMvcRequestBuilders
                 .post("/create-repository")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION,blankAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, BLANK_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(repoToCreate));
 
@@ -258,10 +257,10 @@ public class GitHubControllerIT {
         RequestBuilder request = MockMvcRequestBuilders
                 .post("/create-repository")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken+"*")
+                .header(HttpHeaders.AUTHORIZATION, NOT_VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(repoToCreate));
-        when(gitHubService.createRepoByAuthToken(validAuthorizationToken+"*",repoToCreate)).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+        when(gitHubService.createRepoByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN,repoToCreate)).thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED,HttpStatus.UNAUTHORIZED.getReasonPhrase()));
 
         //then
         mockMvc.perform(request)
@@ -269,7 +268,7 @@ public class GitHubControllerIT {
                 .andExpect(status().reason(HttpStatus.UNAUTHORIZED.getReasonPhrase()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).createRepoByAuthToken(validAuthorizationToken+"*",repoToCreate);
+        verify(gitHubService, times(1)).createRepoByAuthToken(NOT_VALID_AUTHORIZATION_TOKEN,repoToCreate);
 
     }
 
@@ -282,11 +281,11 @@ public class GitHubControllerIT {
         RequestBuilder request = MockMvcRequestBuilders
                 .post("/create-repository")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION,validAuthorizationToken)
+                .header(HttpHeaders.AUTHORIZATION, VALID_AUTHORIZATION_TOKEN)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(repoToCreate));
-        when(gitHubService.createRepoByAuthToken(validAuthorizationToken,repoToCreate)).thenReturn(expected);
 
+        when(gitHubService.createRepoByAuthToken(VALID_AUTHORIZATION_TOKEN,repoToCreate)).thenReturn(expected);
 
         //then
         mockMvc.perform(request)
@@ -297,7 +296,7 @@ public class GitHubControllerIT {
                 .andExpect(jsonPath("$.owner.login").value(expected.getOwner().getLogin()))
                 .andReturn();
 
-        verify(gitHubService, times(1)).createRepoByAuthToken(validAuthorizationToken,repoToCreate);
+        verify(gitHubService, times(1)).createRepoByAuthToken(VALID_AUTHORIZATION_TOKEN,repoToCreate);
 
     }
 

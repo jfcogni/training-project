@@ -3,6 +3,8 @@ package com.cognizant.jfcogni.trainingproject.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Objects;
+
 public class GitHubRepoToCreateDTO {
 
 
@@ -62,5 +64,19 @@ public class GitHubRepoToCreateDTO {
 
     public void setHomepage(String homepage) {
         this.homepage = homepage;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GitHubRepoToCreateDTO that = (GitHubRepoToCreateDTO) o;
+        return privateRepo == that.privateRepo && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(homepage, that.homepage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, privateRepo, homepage);
     }
 }

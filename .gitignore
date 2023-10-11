@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/java/com/cognizant/jfcogni/trainingproject/exceptions/
+/src/test/resources/codeCoverage/*

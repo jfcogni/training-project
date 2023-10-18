@@ -47,12 +47,10 @@ public class GitHubServiceImpl implements GitHubService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         GitHubUserDTO user = mapper.readValue(response.body(), GitHubUserDTO.class);
-        if (user != null){
-            if(StringUtils.isBlank(user.getName()))
+        if (user != null && StringUtils.isBlank(user.getName())) {
                 user.setName("Sin nombre definido en GitHub");
-            return user;
-        }else
-            return null;
+        }
+        return user;
     }
 
     @Override
@@ -108,7 +106,6 @@ public class GitHubServiceImpl implements GitHubService {
 
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
     }
 
     private HttpResponse<String> httpPostCall(String URL, String token, String jsonBody) throws IOException, InterruptedException {
@@ -122,6 +119,5 @@ public class GitHubServiceImpl implements GitHubService {
 
 
         return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
     }
 }

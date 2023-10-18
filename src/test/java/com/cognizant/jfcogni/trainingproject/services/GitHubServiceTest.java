@@ -91,6 +91,57 @@ public class GitHubServiceTest {
     }
 
     @Test
+    public void testGetUserByAuthTokenWithValidAuthorizationTokenAndUserReturnNullUser() throws IOException, InterruptedException {
+        //given
+        ReflectionTestUtils.setField(gitHubService, FIELD_GITHUBAPIURL_IN_GIT_HUB_SERVICE, GITHUB_API_URL);
+
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(response.statusCode()).thenReturn(HttpStatus.OK.value());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(response.body()).thenReturn(objectMapper.writeValueAsString(null));
+
+        //when
+        GitHubUserDTO result = gitHubService.getUserByAuthToken(VALID_AUTHORIZATION_TOKEN);
+
+        assertEquals(null,result);
+
+
+
+        verify(httpClient, times(1)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verify(response).statusCode();
+        verify(response).body();
+
+    }
+
+    @Test
+    public void testGetUserByAuthTokenWithValidAuthorizationTokenAndUserWithoutName() throws IOException, InterruptedException {
+        //given
+        ReflectionTestUtils.setField(gitHubService, FIELD_GITHUBAPIURL_IN_GIT_HUB_SERVICE, GITHUB_API_URL);
+        GitHubUserDTO expected = new GitHubUserDTO("","jesusLogin");
+
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(response);
+        when(response.statusCode()).thenReturn(HttpStatus.OK.value());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(response.body()).thenReturn(objectMapper.writeValueAsString(expected));
+
+        //when
+        GitHubUserDTO result = gitHubService.getUserByAuthToken(VALID_AUTHORIZATION_TOKEN);
+
+        //then
+        assertAll(
+                () -> assertEquals("Sin nombre definido en GitHub",result.getName()),
+                () -> assertEquals(expected.getLogin(),result.getLogin())
+        );
+
+        verify(httpClient, times(1)).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        verify(response).statusCode();
+        verify(response).body();
+
+    }
+
+    @Test
     public void testGetUserByAuthTokenWithValidAuthorizationToken() throws IOException, InterruptedException {
         //given
         ReflectionTestUtils.setField(gitHubService, FIELD_GITHUBAPIURL_IN_GIT_HUB_SERVICE, GITHUB_API_URL);
